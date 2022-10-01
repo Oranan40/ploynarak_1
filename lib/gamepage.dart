@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -6,190 +5,328 @@ class Home extends StatefulWidget {
 
   @override
   State<Home> createState() => _HomeState();
-////
 }
-class RRandom{
-  var random_n=0;
-  RRandom(){
-    var  r = new Random();
-    random_n = r.nextInt(100)+1;
-    print(random_n);
-  }
 
-}
 class _HomeState extends State<Home> {
-  var Messege = "";
-  var Messege2 = "ทายเลข 1-100";
-  var countnumber = 0;
+  @override
+  var totalblue = 0;
+  var totalpink = 0;
+  var statusButton = true;
+  List<bool> list = [false, false, false, false];
+  List<int> scoringblue = [];
+  List<int> scoringpink = [];
 
-  var A = new RRandom();
-  void sumMessege(int n) {
-    setState(() {
-      Messege += n.toString();
-    });
+  Widget Scorenull() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(height: 23),
+        Container(
+          height: 47,
+        ),
+      ],
+    );
   }
-  void setMessege2(var str){
-    if(Messege.length==0) {
-      setState(() {
-        Messege2 = str;
-      });
-    }else{
-      setState(() {
-        Messege2 = "$Messege : "+str;
-      });
-    }
+
+  Widget Score(int i) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(height: 5),
+        i != 4 ? Text("ROUND $i") : Text("TOTAL"),
+        Container(
+          height: 47,
+          child: Row(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Container(
+                    alignment: Alignment.center,
+                    child: i != 4
+                        ? Text(
+                      "${scoringblue[i - 1]}",
+                      style: TextStyle(fontSize: 17),
+                    )
+                        : Text(
+                      "${totalblue}",
+                      style: TextStyle(fontSize: 17),
+                    )),
+              ),
+              Expanded(
+                child: Container(
+                    alignment: Alignment.center,
+                    child: i != 4
+                        ? Text(
+                      "${scoringpink[i - 1]}",
+                      style: TextStyle(fontSize: 17),
+                    )
+                        : Text(
+                      "${totalpink}",
+                      style: TextStyle(fontSize: 17),
+                    )),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          color: Colors.black26.withOpacity(0.1),
+          height: 2,
+        ),
+      ],
+    );
   }
-  void deleteMessege(int n) {
-    setState(() {
-      Messege = Messege.substring(0, Messege.length - 1);
-    });
-  }
-  void callculate(){
-    var checknum = int.tryParse(Messege);
-    if(checknum==A.random_n){
-      setMessege2("ถูกต้อง (ทายไป $countnumber ครั้ง)");
-    }else{
-      if(checknum!<A.random_n){
-        setMessege2("น้อยเกินไป");
-      }else{
-        setMessege2("มากเกินไป");
+
+  void Click(bool check) {
+    for (int i = 0; i < list.length; i++) {
+      if (list[i] == false) {
+        setState(() {
+          list[i] = true;
+          if (i == 2) {
+            list[i + 1] = true;
+            statusButton = false;
+          }
+          if (check) {
+            scoringblue.add(10);
+            scoringpink.add(9);
+            totalblue += 10;
+            totalpink += 9;
+          } else {
+            scoringblue.add(9);
+            scoringpink.add(10);
+            totalblue += 9;
+            totalpink += 10;
+          }
+        });
+        break;
       }
     }
   }
-  Widget Button(int n) {//1
-    return InkWell(
-        onTap: () {
-          if (n == -1) {
-            deleteMessege(n);
-          } else if (n == -2) {
-            return;
-          } else if (n == -3) {
-            countnumber++;
-            if(Messege.length==0){
-              setMessege2("โปรดใส่เลขด้วย");
-              Messege = "";
-              return;
-            }
-            callculate();
-            Messege = "";
-          } else {
-            sumMessege(n);
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-              alignment: Alignment.center,
-              width: 55,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.7),
-                border: Border.all(
-                    color: Colors.black.withOpacity(0.76), width: 1.5),
-                borderRadius: BorderRadius.circular(8),
+
+  Widget Buttonmodel1() {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: ElevatedButton(
+              onPressed: () {
+                for (int i = 0; i < list.length; i++) {
+                  if (list[i] == false) {
+                    setState(() {
+                      Click(true);
+                    });
+                    break;
+                  }
+                }
+              },
+              child: Icon(Icons.person, size: 27),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                primary: Colors.blue[300],
+                fixedSize: Size(10,45),
               ),
-              child: Text(() {
-                if (n == -1) {
-                  return "<";
-                }
-                if (n == -2) {
-                  return "x";
-                }
-                if (n == -3) {
-                  return "GUESS";
-                }
-                return "$n";
-              }())),
+
+            ),
+          ),
         ),
-        customBorder: UnderlineInputBorder());
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: ElevatedButton(
+              onPressed: () {
+                for (int i = 0; i < list.length; i++) {
+                  if (list[i] == false) {
+                    setState(() {
+                      Click(false);
+                    });
+                    break;
+                  }
+                }
+              },
+              child: Icon(Icons.person, size: 27),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                primary: Colors.pink[300],
+                fixedSize: Size(10,45),
+              ),
+
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("GUESS THE NUMBER")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.lightBlueAccent.withOpacity(0.2),
-                    border: Border.all(
-                      color: Colors.black54.withOpacity(0.5),
-                      width: 5,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      )
-                    ]),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 150),
-                        Column(
-                          children: [
-                            Text("GUESS", style: TextStyle(fontSize: 35)),
-                            Text("THE NUMBER", style: TextStyle(fontSize: 20)),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(0.0),
-                      child: Container(
-                        child: Text(Messege, style: TextStyle(fontSize: 40)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Text(Messege2),
+  // Widget Buttonmodel1() {
+  //   return Row(
+  //     children: [
+  //       Expanded(
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(5.0),
+  //           child: InkWell(
+  //             onTap: () {
+  //               for (int i = 0; i < list.length; i++) {
+  //                 if (list[i] == false) {
+  //                   setState(() {
+  //                     Click(true);
+  //                   });
+  //                   break;
+  //                 }
+  //               }
+  //             },
+  //             child: Container(
+  //               height: 47,
+  //               decoration: BoxDecoration(
+  //                 color: Colors.blue[300],
+  //                 borderRadius: BorderRadius.circular(8),
+  //               ),
+  //               child: Icon(Icons.person, size: 27),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //       Expanded(
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(5.0),
+  //           child: InkWell(
+  //             onTap: () {
+  //               for (int i = 0; i < list.length; i++) {
+  //                 if (list[i] == false) {
+  //                   setState(() {
+  //                     Click(false);
+  //                   });
+  //                   break;
+  //                 }
+  //               }
+  //             },
+  //             child: Container(
+  //               height: 47,
+  //               decoration: BoxDecoration(
+  //                 color: Colors.pink[300],
+  //                 borderRadius: BorderRadius.circular(8),
+  //               ),
+  //               child: Icon(Icons.person, size: 27),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    for (var row in [
-                      [1, 2, 3],
-                      [4, 5, 6],
-                      [7, 8, 9],
-                    ])
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [for (var i in row) Button(i)],
-                      ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Button(-2),
-                        Button(0),
-                        Button(-1),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Button(-3),
-                      ],
-                    ),
-                  ],
+  Widget Buttonmodel2() {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: InkWell(
+              child: Container(
+                height: 47,
+                decoration: BoxDecoration(
+                  color: Colors.black26,
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: Icon(Icons.clear, size: 27),
               ),
             ),
-          ],
+          ),
         ),
+      ],
+    );
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Center(
+          child: Text("OLYMPIC BOXING SCORING", style: TextStyle(fontSize: 22)),
+        ),
+        backgroundColor: Colors.deepPurple[300],
+      ),
+      backgroundColor: Colors.deepPurple[100],
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              SizedBox(width: 4),
+              Text("TOKYO 2020", style: TextStyle(fontSize: 27)),
+            ],
+          ),
+          Container(
+            alignment: Alignment.center,
+            color: Colors.deepPurple[300],
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text("Women's Light (57-60kg) Semi-final",
+                  style: TextStyle(fontSize: 13)),
+            ),
+          ),
+          Row(
+            children: [
+              Icon(Icons.person, size: 71, color: Colors.blue[300]),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+
+                      SizedBox(width: 2),
+                      Text("IRELAND", style: TextStyle(fontSize: 17)),
+                    ],
+                  ),
+                  Text("HARRINGTON Kellie Anne",
+                      style: TextStyle(fontSize: 13)),
+                ],
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(Icons.person, size: 71, color: Colors.pink[300]),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+
+                      SizedBox(width: 2),
+                      Text("THAILAND", style: TextStyle(fontSize: 17)),
+                    ],
+                  ),
+                  Text("SEESONDEE Sudaporn", style: TextStyle(fontSize: 13)),
+                ],
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 2,
+                  color: Colors.blue[300],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 2,
+                  color: Colors.pink[300],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 5),
+          for (int i = 0; i < 4; i++)
+            list[i] == false ? Scorenull() : Score(i + 1),
+          SizedBox(
+            height: 5,
+          ),
+          statusButton == true ?Buttonmodel1():Buttonmodel2(),
+        ],
       ),
     );
   }
